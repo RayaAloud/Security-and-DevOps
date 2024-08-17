@@ -22,19 +22,19 @@ public class Item {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty
 	private Long id;
-	
+
 	@Column(nullable = false)
 	@JsonProperty
 	private String name;
-	
+
 	@Column(nullable = false)
 	@JsonProperty
 	private BigDecimal price;
-	
+
 	@Column(nullable = false)
 	@JsonProperty
 	private String description;
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -58,6 +58,14 @@ public class Item {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+	public Item() {
+	}
+	public Item(Long id, String name, String description, BigDecimal price) {
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.price = price;
 	}
 
 	public Long getId() {
@@ -91,7 +99,7 @@ public class Item {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	
-	
+
+
+
 }

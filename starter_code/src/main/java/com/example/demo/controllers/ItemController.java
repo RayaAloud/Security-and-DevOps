@@ -1,7 +1,10 @@
 package com.example.demo.controllers;
 
+
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,23 +21,35 @@ public class ItemController {
 
 	@Autowired
 	private ItemRepository itemRepository;
-	
+
+	private static final Logger logger = LogManager.getLogger(ItemController.class);
+
 	@GetMapping
 	public ResponseEntity<List<Item>> getItems() {
-		return ResponseEntity.ok(itemRepository.findAll());
+		logger.info("Fetching all items");
+		List<Item> items = itemRepository.findAll();
+		if (items.isEmpty()) {
+			logger.info("No items found");
+		}
+		return ResponseEntity.ok(items);
 	}
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<Item> getItemById(@PathVariable Long id) {
+		logger.info("Fetching item by ID: {}", id);
 		return ResponseEntity.of(itemRepository.findById(id));
 	}
-	
+
 	@GetMapping("/name/{name}")
 	public ResponseEntity<List<Item>> getItemsByName(@PathVariable String name) {
+		logger.info("Fetching items by name: {}", name);
 		List<Item> items = itemRepository.findByName(name);
-		return items == null || items.isEmpty() ? ResponseEntity.notFound().build()
-				: ResponseEntity.ok(items);
-			
+		if (items == null || items.isEmpty()) {
+			logger.warn("No items found with name: {}", name);
+			return ResponseEntity.notFound().build();
+		}
+		logger.info("Found {} items with name: {}", items.size(), name);
+		return ResponseEntity.ok(items);
 	}
-	
+
 }
